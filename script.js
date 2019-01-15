@@ -16,18 +16,21 @@ var game={
 };
 // new game section
 //  new level 1 game
-function jump1(){
+function level_1(){ 
+       console.log("Level 1")
        var New_Game = document.querySelector('.game-stats__button');
        var game_board = document.querySelector('.game-board');
+       var time_bar= document.querySelector(".game-timer__bar");
        //create a array of class name
-       var Class_Name=["css3","html5"];   
-       New_Game.addEventListener('click',function(){
-       game.display_time=60;
+       var Class_Name=["css3","html5"];  
        var score=document.querySelector(".game-stats__score--value");
        score.innerHTML=game.score;
-        time();
+      //重新开始的时候让他显示60秒 合满血状态
+       time_bar.innerHTML="60s";
+       time_bar.style.width="100%";
         //  set attribute
        game_board.setAttribute('style','grid-template-columns: 1fr 1fr;');
+
        //  change button name
        New_Game.innerHTML="End Game";
        //change html(innerhtml 只有在这个function 有效)
@@ -72,13 +75,22 @@ function jump1(){
  }
         // The class of innerHTML's tag(such as card css3 ) just effect in this section so I just can use flip function in this function
        // 这个界面是点击后才会出现的 所以里面的类名也应该在这里
-       flip();
-    });
+       flip(); 
+       time(); 
+}
+function jump1(){
+       console.log("jump 1")
+       var New_Game = document.querySelector('.game-stats__button');
+    //    var game_board = document.querySelector('.game-board');
+    //    //create a array of class name
+    //    var Class_Name=["css3","html5"];   
+       New_Game.addEventListener('click',level_1);
     } 
-
 if (game.level==1){
     jump1();
-}
+    }   
+
+
 
 // flip the card
 function flip(){
@@ -174,11 +186,12 @@ function random(min,max){
     return Math.floor(Math.random()*(max-min+1)+min);
 }
 function time(){
+    // 这里面会先把所有的代码走一遍在执行 interval
     var start=document.querySelector(".game-stats__button");
     var time_bar= document.querySelector(".game-timer__bar");
     var width=100;
     // setTimeout 只会执行一次 setInterva一直执行
-    var interval=setInterval(function(){
+    var interval=setInterval(()=>{
         width-=1.7
         game.display_time-=1;
         time_bar.innerHTML=game.display_time+"s";
@@ -186,18 +199,49 @@ function time(){
         // 60秒后停止 
         if(game.display_time==0){
            // 超时game over 时间回到60
-            game.display_time=60;
-            game.score=0;
             clearInterval(interval);
             // 弹框
-            alert("Congratulations! your score is "+game.score);
+            alert("Congratulations! your score is "+game.score);  
+            game.display_time=60;
+            game.score=0;
             start.innerHTML="Start Game";
-            start.addEventListener('click',function(){
-                if(game.level==1){
-                    jump1();
-                }
-            })
+            // level 1
+            if(game.level==1){
+            // 因为一开始整个function 是执行所有代码在执行计时 所以按钮被赋予了start.addEventListener('click',b); 
+            // 所以计时结束的时候要remove 的是('click',b)而不是('click',level_1);
+            start.removeEventListener('click',b);
+            start.addEventListener('click',level_1);
+            }
 
-        }
+        } 
   },1000)
+
+    //  为了方便 remove 因为 removeeventlistener 不能用整个函数
+       var b=function(){
+         Back(interval,start);
+         start.removeEventListener('click',b);
+         if(game.level==1){
+            start.addEventListener('click',level_1);  
+         }
+        }
+        // 随时停止 
+        if(game.level==1){
+            start.removeEventListener('click',level_1);
+            // 这个东西会马上触发的 要是 直接（）=》{} 这样子就不会
+            // start.addEventListener('click',Back(interval,start));  
+            // 这样就没事了 正常了
+            start.addEventListener('click',b); 
+            // 这个不能放下面 因为代码一开始就会被执行 所以就会add 了之后 马上remove了 所以只能放在function 里面
+            // start.removeEventListener('click',b);
+        }
+
+}
+
+function Back(interval,start){
+    console.log("sdfsd");
+    clearInterval(interval);
+    alert("Congratulations! your score is "+game.score); 
+    game.display_time=60;
+    game.score=0;
+    start.innerHTML="Start Game";
 }
