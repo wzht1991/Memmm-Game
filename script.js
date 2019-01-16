@@ -43,9 +43,10 @@ function level_1(){
        //  随机卡牌  
        for(var i=0;i<4;i++){
         // 随机0到1 包括1的整数 level 1 专用要是匹配出来的是用过的元素就继续匹配
+        var index=random(0,1);
         while(Class_Name[index]==usedEle){
-            var index=random(0,1);
-            console.log(index);
+            index=random(0,1);
+            console.log("111");
         }
          //如果还剩下4-i(还剩下多少空位)=used 的长度时候触发 因为这说明后面的几个位置得全部给未匹配成功的元素
          if((4-i)==used.length){
