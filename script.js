@@ -317,6 +317,8 @@ function time(){
                clearInterval(interval);  
                game.level=2;
                game.display_time=60;
+            // 因为一执行time() 这个function 其实就是已经add click b （354行）所以每次在过关之后都要把这个eventlist 清除掉
+               start.removeEventListener('click',b);
                Level2();
             } 
          }else if(game.level==2){
@@ -324,6 +326,8 @@ function time(){
             clearInterval(interval);  
             game.level=3;
             game.display_time=60;
+            // 因为一执行time() 这个function 其实就是已经add click b（354行） 所以每次在过关之后都要把这个eventlist 清除掉
+            start.removeEventListener('click',b);
             Level3();
             }
           }else if(game.level==3){
@@ -337,8 +341,8 @@ function time(){
 
     //  为了方便 remove 因为 removeeventlistener 不能用整个函数
        var b=function(){
+         Back(interval,start); 
          start.removeEventListener('click',b); 
-         Back(interval,start);
         // 全部都需要从第一关开始
          start.addEventListener('click',level_1);  
         }
@@ -350,6 +354,8 @@ function time(){
             start.addEventListener('click',b); 
          // 这个不能放下面 因为代码一开始就会被执行 所以就会add 了之后 马上remove了 所以只能放在function 里面
             // start.removeEventListener('click',b);
+          
+        
 }
 
 function Back(interval,start){
